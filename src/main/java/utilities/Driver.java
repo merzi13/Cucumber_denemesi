@@ -1,32 +1,42 @@
 package utilities;
 
 
-import org.openqa.selenium.Alert;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 public class Driver {
 
-    private static WebDriver driver;
+    static private WebDriver driver;//null, baska hicbir classtan bu objeme ellenemez
+    static Driver driverClassObje;
 
-    public static WebDriver getDriver() {
+
+    //default constructor of the class
+    //java bilgisi private:access modifier
+    private Driver() {
+        ChromeOptions options=new ChromeOptions();
+        options.addArguments(
+                "--start-maximized",
+                "--disable-notifications", //bildirim almak ister misin pop-up'ini otomatik kapatir
+                "--remote-allow-origins=*" // Chrome111 ile aldigimiz hatanin cozumu icin
+        );
+
+        driver= WebDriverManager.chromedriver().avoidShutdownHook().capabilities(options).create();
+    }
+
+    static public WebDriver getDriver() {
 
         if (driver == null) {
-        System.setProperty("webdriver.chrome.river","C:\\Users\\omero\\Selenium\\ChromeDriver\\chromedriver.exe");
-
-        driver = new ChromeDriver();
+        driverClassObje = new Driver();
 
         }
         return  driver;
     }
 
-    public static void closeDriver(){
+     static public WebDriver launchBrowserAgain(){
 
-        if (driver!= null){
-
-            driver.quit();
-            driver=null;
-        }
+         driverClassObje=new Driver();
+         return driver;
     }
 
 }
